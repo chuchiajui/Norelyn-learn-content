@@ -1,5 +1,9 @@
 # Norelyn Learn Content
 
+> **工程交接入口（2026-10-28）**：[Handoff](docs/HANDOFF.md) · [Status](docs/STATUS.md) · [公開內容契約草案](docs/CONTENT_CONTRACT.md) · [審核與發布草案](docs/PUBLICATION_WORKFLOW.md) · [隱私與授權](docs/SECURITY_AND_LICENSING.md) · [同步與索引](docs/SYNC_AND_INDEXING.md) · [測試](docs/DEVELOPMENT_AND_TESTING.md) · [操作](docs/OPERATIONS.md) · [Roadmap](docs/CURRENT_ROADMAP.md)。
+>
+> **狀態**：此 Repo 目前仍沒有教材或發布程式。下列工程文件參照 Norelyn Learn 的開發分支描述**擬議契約**，不代表已部署或已啟用。詳見 [決策與未決問題](docs/DECISIONS.md)。
+
 Norelyn Learn 的公開學習內容儲存庫，供教材、教學範例與知識文件的版本管理使用。
 
 > **狀態：內容庫骨架。** 截至 2026-10-28，`main` 只有本 README；尚未加入可供發佈的課程或文章。建立儲存庫**不等於**已完成 Learn 的投稿、審核、同步或自動發布管線。
