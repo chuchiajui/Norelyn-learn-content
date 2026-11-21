@@ -13,7 +13,7 @@ const PRIVACY = [
   ['GitHub token', /\b(?:gh[pousr]_[A-Za-z0-9_]+|github_pat_[A-Za-z0-9_]+)/],
   ['JWT', /\beyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/],
   ['signed URL parameter', /[?&](?:x-amz-(?:signature|credential|security-token)|x-goog-(?:signature|credential)|sig|signature|token|access_token)=/i],
-  ['private filesystem path', /(?:\/(?:home|Users|root|tmp|private|var|etc)\/|[A-Z]:[\\/]|\\\\[A-Za-z0-9_.-]+\\)/i],
+  ['private filesystem path', /(?:\/(?:home|Users|root|tmp|private|var|etc)\/|(?<![A-Z0-9])[A-Z]:[\\/]|\\\\[A-Za-z0-9_.-]+\\)/i],
   ['forbidden private field', /\b(?:authorUserId|reviewerUserId|reviewerNotes|moderationComments)\b/]
 ];
 

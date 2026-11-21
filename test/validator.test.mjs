@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { test } from 'node:test';
 import { cp, mkdtemp, mkdir, readFile, readdir, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -16,6 +17,13 @@ function errors(row = manifest, body = markdown, id = revision) {
   const found = [];
   validatePair(body, typeof row === 'string' ? row : JSON.stringify(row), article, id, (e) => found.push(e));
   return found;
+}
+function validErrors(summary, body = markdown) {
+  const content = { title: manifest.title, summary, bodyMarkdown: body,
+    categoryId: manifest.categoryId, tags: manifest.tags, youtubeVideoIds: manifest.youtubeVideoIds };
+  const sourceContentHash = createHash('sha256').update(JSON.stringify(content)).digest('hex');
+  const revisionId = 'rev_' + sourceContentHash.slice(0, 32);
+  return errors({ ...manifest, summary, sourceContentHash, revisionId }, body, revisionId);
 }
 async function tree(t, copy = true) {
   const root = await mkdtemp(join(tmpdir(), 'synthetic-content-test-'));
@@ -70,6 +78,13 @@ test('privacy rules scan body and decoded manifest, without printing sensitive m
   }
   const escaped = JSON.stringify({ ...manifest, summary: 'usr_synthetic' }).replace('usr_', '\\u0075sr_');
   assert.ok(errors(escaped).some((e) => e.startsWith('privacy:')));
+});
+test('drive paths reject private paths without rejecting URLs or escaped prose', () => {
+  assert.deepEqual(validErrors(manifest.summary, 'https://example.com/page'), []);
+  assert.deepEqual(validErrors('Note:\nnext'), []);
+  for (const path of ['C:\\Users\\alice', 'D:/data']) {
+    assert.ok(validErrors(manifest.summary, path).includes('privacy: private filesystem path'));
+  }
 });
 test('orphans, unexpected paths, symlinks, malformed UTF-8, and oversized files fail', async (t) => {
   for (const mode of ['orphan', 'path', 'directory', 'symlink', 'utf8', 'size', 'root-symlink', 'root-file']) {
