@@ -86,6 +86,23 @@ test('drive paths reject private paths without rejecting URLs or escaped prose',
     assert.ok(validErrors(manifest.summary, path).includes('privacy: private filesystem path'));
   }
 });
+test('decoded manifest keys and string values are scanned individually and recursively', () => {
+  for (const summary of ['first\nusr_abc123', 'first\nreach me at a@b.co']) {
+    assert.ok(validErrors(summary).some((e) => e.startsWith('privacy:')));
+  }
+  for (const extra of [
+    { nested: [{ value: 'first\nusr_abc123' }] },
+    { nested: [{ 'usr_abc123': null }] },
+    { nested: ['first\nreach me at a@b.co'] }
+  ]) {
+    assert.ok(errors({ ...manifest, extra }).some((e) => e.startsWith('privacy:')));
+  }
+  const escaped = JSON.stringify({ ...manifest, summary: 'first\nusr_abc123' })
+    .replace('usr_', '\\u0075sr_');
+  assert.ok(errors(escaped).includes('privacy: private user ID'));
+  assert.deepEqual(validErrors(''), []);
+  assert.deepEqual(validErrors('Note:\nnext'), []);
+});
 test('orphans, unexpected paths, symlinks, malformed UTF-8, and oversized files fail', async (t) => {
   for (const mode of ['orphan', 'path', 'directory', 'symlink', 'utf8', 'size', 'root-symlink', 'root-file']) {
     await t.test(mode, async (t) => {

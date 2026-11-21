@@ -24,18 +24,28 @@ function privacy(text, report) {
   }
 }
 
+function manifestPrivacy(value, report) {
+  if (typeof value === 'string') privacy(value, report);
+  else if (Array.isArray(value)) {
+    for (const item of value) manifestPrivacy(item, report);
+  } else if (value && typeof value === 'object') {
+    for (const [key, item] of Object.entries(value)) {
+      privacy(key, report);
+      manifestPrivacy(item, report);
+    }
+  }
+}
+
 export function validatePair(markdown, rawManifest, articleId, revisionId, report) {
   if (markdown.length > 100_000 || !markdown.trim()) report('markdown must be nonblank and at most 100000 UTF-16 code units');
   if (rawManifest.length > 20_000) report('manifest exceeds 20000 UTF-16 code units');
   privacy(markdown, report);
-  privacy(rawManifest, report);
   let row;
   try { row = JSON.parse(rawManifest); } catch { report('invalid manifest JSON'); return; }
   if (!row || typeof row !== 'object' || Array.isArray(row)) {
     report('manifest must be an object'); return;
   }
-  // Also inspect decoded JSON so escapes cannot conceal private strings or keys.
-  privacy(JSON.stringify(row), report);
+  manifestPrivacy(row, report);
   if (Object.keys(row).length !== KEYS.length || KEYS.some((key) => !Object.hasOwn(row, key))) report('manifest must contain exactly the public v1 keys');
   const string = (v, max) => typeof v === 'string' && v.length <= max;
   const strings = (v, max, check) => Array.isArray(v) && v.length <= max && v.every(check);

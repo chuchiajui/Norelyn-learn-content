@@ -44,7 +44,8 @@ Checks include:
   of Markdown alone. No trimming, newline conversion, or reformatting is done.
   Decoding uses Learn's TextDecoder behavior (including stripping a leading
   UTF-8 BOM); it is not a byte-for-byte comparison to a private D1 snapshot.
-- Heuristic privacy rejection in Markdown and raw/decoded manifest: emails,
+- Heuristic privacy rejection in Markdown and each decoded manifest key/string
+  value (recursively, including arrays): emails,
   private user identifiers, GitHub token forms, JWT-like strings, signed URL
   parameters, private filesystem paths, and forbidden ownership/review fields.
   Diagnostics name the rule, not the matching sensitive value.
