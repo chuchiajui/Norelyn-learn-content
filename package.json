@@ -1,0 +1,10 @@
+{
+  "name": "norelyn-learn-content",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "validate": "node scripts/validate-public-content.mjs",
+    "test": "node --test"
+  },
+  "engines": { "node": ">=20" }
+}
