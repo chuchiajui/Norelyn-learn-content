@@ -31,6 +31,14 @@ Checks include:
 - Exactly the 12 public manifest keys emitted by Learn; types, required fields,
   positive safe-integer source revision, article/submission/path identity, and
   revision equal to `rev_` plus the first 32 characters of the SHA-256 hash.
+- Manifest text must equal `JSON.stringify(parsedManifest, null, 2)`, with no
+  trailing newline, matching `admin-export-route.ts` at the mirrored commit.
+  This rejects duplicate keys (including overwritten private values), alternate
+  escaping, and extra formatting. This is deliberately stricter than Learn's
+  public reader and `VerifiedPublicCommitStore`: both parse JSON, and the latter
+  compares reserialized objects rather than raw manifest text. The unused
+  `GitHubPublicationStore` writer emits compact JSON; this validator targets the
+  manual owner export, not that writer's formatting.
 - Learn publication limits: title 200, summary 1200, Markdown 100000,
   tags at most 12 of length at most 40, videos at most 8 matching
   `[A-Za-z0-9_-]{11}`, valid category or null, parseable approval date of length
@@ -64,6 +72,8 @@ this repository and executing its `contentDigest`, `prepareApprovedPublication`,
 and `publishedPaths` functions using Node 22's TypeScript transform. All inputs
 are synthetic (zero-filled submission ID, test-only title and video ID); no D1
 record, person, actual video, approval, or publication is represented.
+Its manifest uses the manual export's two-space serialization without a trailing
+newline (the initial fixture generator's added newline has been removed).
 
 ## Not proof of publication or safety
 

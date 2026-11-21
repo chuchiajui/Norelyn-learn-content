@@ -15,7 +15,7 @@ const manifest = JSON.parse(await readFile(new URL(manifestName, directory), 'ut
 const markdown = await readFile(new URL(revision + '.md', directory), 'utf8');
 function errors(row = manifest, body = markdown, id = revision) {
   const found = [];
-  validatePair(body, typeof row === 'string' ? row : JSON.stringify(row), article, id, (e) => found.push(e));
+  validatePair(body, typeof row === 'string' ? row : JSON.stringify(row, null, 2), article, id, (e) => found.push(e));
   return found;
 }
 function validErrors(summary, body = markdown) {
@@ -36,6 +36,14 @@ async function tree(t, copy = true) {
 test('Learn-generated synthetic pair is accepted', async () => {
   assert.deepEqual(await validateDirectory(fixture), []);
   assert.deepEqual(errors(), []);
+});
+test('noncanonical manifests cannot hide overwritten private values', () => {
+  const canonical = JSON.stringify(manifest, null, 2);
+  const duplicate = canonical.replace('{', '{\n  "summary": "usr_abc123 secret",');
+  assert.deepEqual(JSON.parse(duplicate), manifest);
+  for (const raw of [duplicate, canonical + '\n', JSON.stringify(manifest)]) {
+    assert.ok(errors(raw).some((e) => e.startsWith('manifest must use Learn export JSON serialization')));
+  }
 });
 test('absent and empty articles directories pass', async (t) => {
   const root = await tree(t, false);

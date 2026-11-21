@@ -45,6 +45,9 @@ export function validatePair(markdown, rawManifest, articleId, revisionId, repor
   if (!row || typeof row !== 'object' || Array.isArray(row)) {
     report('manifest must be an object'); return;
   }
+  if (rawManifest !== JSON.stringify(row, null, 2)) {
+    report('manifest must use Learn export JSON serialization (two-space indentation, no trailing newline)');
+  }
   manifestPrivacy(row, report);
   if (Object.keys(row).length !== KEYS.length || KEYS.some((key) => !Object.hasOwn(row, key))) report('manifest must contain exactly the public v1 keys');
   const string = (v, max) => typeof v === 'string' && v.length <= max;
