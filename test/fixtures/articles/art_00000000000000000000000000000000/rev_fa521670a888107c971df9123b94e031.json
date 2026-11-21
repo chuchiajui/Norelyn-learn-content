@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "articleId": "art_00000000000000000000000000000000",
+  "revisionId": "rev_fa521670a888107c971df9123b94e031",
+  "sourceSubmissionId": "sub_00000000000000000000000000000000",
+  "sourceContentRevision": 1,
+  "sourceContentHash": "fa521670a888107c971df9123b94e0318f324eb6489f9eff014e1575e24c3ae3",
+  "title": "Synthetic geometry fixture",
+  "summary": "Test data only; not an approved article.",
+  "categoryId": "synthetic-test",
+  "tags": [
+    "synthetic"
+  ],
+  "youtubeVideoIds": [
+    "SYNTHETIC01"
+  ],
+  "approvedAt": "2026-01-01T00:00:00.000Z"
+}
